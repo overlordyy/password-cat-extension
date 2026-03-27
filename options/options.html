@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PasswordCat 设置</title>
+  <style>
+    :root {
+      --primary: #667eea;
+      --primary-dark: #764ba2;
+      --bg-dark: #1a1a2e;
+      --bg-card: #252542;
+      --bg-input: #2d3748;
+      --text-primary: #ffffff;
+      --text-secondary: #a0a0b0;
+      --border: rgba(255, 255, 255, 0.1);
+      --gradient: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      padding: 40px;
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    h1 {
+      font-size: 28px;
+      margin-bottom: 8px;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .subtitle {
+      color: var(--text-secondary);
+      margin-bottom: 32px;
+    }
+    
+    .section {
+      background: var(--bg-card);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    
+    .section-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .form-group {
+      margin-bottom: 16px;
+    }
+    
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--bg-input);
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 14px;
+      outline: none;
+    }
+    
+    .form-input:focus {
+      border-color: var(--primary);
+    }
+    
+    .btn {
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .btn-primary {
+      background: var(--gradient);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+    }
+    
+    .btn-danger {
+      background: #dc2626;
+      color: white;
+    }
+    
+    .btn-danger:hover {
+      background: #b91c1c;
+    }
+    
+    .toggle {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .toggle:last-child {
+      border-bottom: none;
+    }
+    
+    .toggle-label {
+      font-size: 14px;
+    }
+    
+    .toggle-switch {
+      width: 48px;
+      height: 26px;
+      background: var(--bg-input);
+      border-radius: 13px;
+      position: relative;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    
+    .toggle-switch.active {
+      background: var(--primary);
+    }
+    
+    .toggle-switch::after {
+      content: '';
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      background: white;
+      border-radius: 50%;
+      top: 2px;
+      left: 2px;
+      transition: transform 0.3s;
+    }
+    
+    .toggle-switch.active::after {
+      transform: translateX(22px);
+    }
+    
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 16px;
+    }
+    
+    .stat-item {
+      text-align: center;
+      padding: 16px;
+      background: var(--bg-input);
+      border-radius: 8px;
+    }
+    
+    .stat-number {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+    
+    .danger-zone {
+      border: 1px solid #dc2626;
+    }
+    
+    .danger-zone .section-title {
+      color: #dc2626;
+    }
+    
+    .footer {
+      text-align: center;
+      margin-top: 40px;
+      color: var(--text-secondary);
+      font-size: 13px;
+    }
+    
+    .footer a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>⚙️ PasswordCat 设置</h1>
+    <p class="subtitle">管理您的密码扩展设置</p>
+    
+    <!-- 统计 -->
+    <div class="section">
+      <div class="section-title">📊 存储统计</div>
+      <div class="stats">
+        <div class="stat-item">
+          <div class="stat-number" id="entriesCount">0</div>
+          <div class="stat-label">密码条目</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" id="lastSync">--</div>
+          <div class="stat-label">最后同步</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">v1.0.0</div>
+          <div class="stat-label">版本</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 自动填充设置 -->
+    <div class="section">
+      <div class="section-title">🎯 自动填充</div>
+      
+      <div class="toggle">
+        <span class="toggle-label">启用自动填充</span>
+        <div class="toggle-switch active" id="autoFillToggle"></div>
+      </div>
+      
+      <div class="toggle">
+        <span class="toggle-label">显示浮动按钮</span>
+        <div class="toggle-switch active" id="fabToggle"></div>
+      </div>
+      
+      <div class="toggle">
+        <span class="toggle-label">自动检测登录页面</span>
+        <div class="toggle-switch active" id="autoDetectToggle"></div>
+      </div>
+    </div>
+    
+    <!-- 安全设置 -->
+    <div class="section">
+      <div class="section-title">🔒 安全</div>
+      
+      <div class="form-group">
+        <label>自动锁定时间（分钟）</label>
+        <select class="form-input" id="autoLockMinutes">
+          <option value="5">5 分钟</option>
+          <option value="15" selected>15 分钟</option>
+          <option value="30">30 分钟</option>
+          <option value="60">1 小时</option>
+          <option value="0">从不</option>
+        </select>
+      </div>
+    </div>
+    
+    <!-- 备份与恢复 -->
+    <div class="section">
+      <div class="section-title">💾 备份与恢复</div>
+      
+      <div class="form-group">
+        <label>导出加密备份</label>
+        <button class="btn btn-primary" id="exportBtn" style="margin-top: 8px;">📤 导出数据</button>
+      </div>
+      
+      <div class="form-group">
+        <label>导入备份文件</label>
+        <input type="file" id="importFile" accept=".json" style="display: none;">
+        <button class="btn btn-primary" id="importBtn" style="margin-top: 8px;">📥 导入数据</button>
+      </div>
+    </div>
+    
+    <!-- 危险区域 -->
+    <div class="section danger-zone">
+      <div class="section-title">⚠️ 危险区域</div>
+      
+      <div class="form-group">
+        <label>删除所有数据</label>
+        <p style="font-size: 12px; color: var(--text-secondary); margin: 8px 0 12px;">
+          此操作不可恢复，请确保已导出备份
+        </p>
+        <button class="btn btn-danger" id="deleteAllBtn">🗑️ 删除所有数据</button>
+      </div>
+    </div>
+    
+    <div class="footer">
+      <p>PasswordCat v1.0.0 | <a href="https://github.com/overlordyy/password_cat" target="_blank">GitHub</a></p>
+    </div>
+  </div>
+  
+  <script src="options.js"></script>
+</body>
+</html>
