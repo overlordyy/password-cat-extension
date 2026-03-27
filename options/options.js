@@ -2,14 +2,39 @@
  * PasswordCat Chrome Extension - Options Page
  */
 
-const { decrypt, encrypt } = window.PasswordCatCrypto;
-const { loadData, saveData } = window.PasswordCatStorage;
+document.addEventListener('DOMContentLoaded', init);
 
-// 加载设置
-async function loadSettings() {
-  const result = await chrome.storage.local.get(['passwordcat_settings', 'passwordcat_entries_index']);
+function init() {
+  loadSettings();
+  loadStats();
   
-  // 加载开关状态
+  // Toggle handlers
+  document.querySelectorAll('.toggle-switch').forEach(toggle => {
+    toggle.addEventListener('click', () => {
+      toggle.classList.toggle('active');
+      saveSettings();
+    });
+  });
+  
+  // Auto-lock select
+  document.getElementById('autoLockMinutes').addEventListener('change', saveSettings);
+  
+  // Export
+  document.getElementById('exportBtn').addEventListener('click', exportData);
+  
+  // Import
+  document.getElementById('importBtn').addEventListener('click', () => {
+    document.getElementById('importFile').click();
+  });
+  
+  document.getElementById('importFile').addEventListener('change', importData);
+  
+  // Delete all
+  document.getElementById('deleteAllBtn').addEventListener('click', deleteAllData);
+}
+
+async function loadSettings() {
+  const result = await chrome.storage.local.get('passwordcat_settings');
   const settings = result.passwordcat_settings || {
     autoFill: true,
     showFab: true,
@@ -17,28 +42,19 @@ async function loadSettings() {
     autoLockMinutes: 15
   };
   
-  updateToggles(settings);
-  
-  // 加载统计数据
+  document.getElementById('autoFillToggle').classList.toggle('active', settings.autoFill);
+  document.getElementById('fabToggle').classList.toggle('active', settings.showFab);
+  document.getElementById('autoDetectToggle').classList.toggle('active', settings.autoDetect);
+  document.getElementById('autoLockMinutes').value = settings.autoLockMinutes;
+}
+
+async function loadStats() {
+  const result = await chrome.storage.local.get('passwordcat_entries_index');
   if (result.passwordcat_entries_index) {
     document.getElementById('entriesCount').textContent = '?';
   }
 }
 
-// 更新开关状态
-function updateToggles(settings) {
-  const autoFillToggle = document.getElementById('autoFillToggle');
-  const fabToggle = document.getElementById('fabToggle');
-  const autoDetectToggle = document.getElementById('autoDetectToggle');
-  
-  autoFillToggle.classList.toggle('active', settings.autoFill);
-  fabToggle.classList.toggle('active', settings.showFab);
-  autoDetectToggle.classList.toggle('active', settings.autoDetect);
-  
-  document.getElementById('autoLockMinutes').value = settings.autoLockMinutes;
-}
-
-// 保存设置
 async function saveSettings() {
   const settings = {
     autoFill: document.getElementById('autoFillToggle').classList.contains('active'),
@@ -50,10 +66,9 @@ async function saveSettings() {
   await chrome.storage.local.set({ passwordcat_settings: settings });
 }
 
-// 导出数据
 async function exportData() {
   try {
-    const result = await chrome.storage.local.get(['passwordcat_entries_index', 'passwordcat_salt', 'passwordcat_settings']);
+    const result = await chrome.storage.local.get(null);
     
     const exportData = {
       version: '1.0.0',
@@ -66,17 +81,19 @@ async function exportData() {
     
     const a = document.createElement('a');
     a.href = url;
-    a.download = `passwordcat-backup-${new Date().toISOString().split('T')[0]}.json`;
+    a.download = 'passwordcat-backup-' + new Date().toISOString().split('T')[0] + '.json';
     a.click();
     
     URL.revokeObjectURL(url);
   } catch (e) {
-    alert('导出失败: ' + e.message);
+    alert('导出失败');
   }
 }
 
-// 导入数据
-async function importData(file) {
+async function importData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  
   try {
     const text = await file.text();
     const importData = JSON.parse(text);
@@ -93,61 +110,15 @@ async function importData(file) {
   }
 }
 
-// 删除所有数据
 async function deleteAllData() {
-  if (!confirm('确定要删除所有数据吗？此操作不可恢复！')) {
-    return;
-  }
-  
-  if (!confirm('再次确认：所有密码数据将被永久删除！')) {
-    return;
-  }
+  if (!confirm('确定要删除所有数据吗？此操作不可恢复！')) return;
+  if (!confirm('再次确认：所有密码数据将被永久删除！')) return;
   
   try {
     await chrome.storage.local.clear();
     alert('所有数据已删除');
     location.reload();
   } catch (e) {
-    alert('删除失败: ' + e.message);
+    alert('删除失败');
   }
 }
-
-// 初始化
-document.addEventListener('DOMContentLoaded', () => {
-  loadSettings();
-  
-  // 开关事件
-  document.getElementById('autoFillToggle').addEventListener('click', () => {
-    document.getElementById('autoFillToggle').classList.toggle('active');
-    saveSettings();
-  });
-  
-  document.getElementById('fabToggle').addEventListener('click', () => {
-    document.getElementById('fabToggle').classList.toggle('active');
-    saveSettings();
-  });
-  
-  document.getElementById('autoDetectToggle').addEventListener('click', () => {
-    document.getElementById('autoDetectToggle').classList.toggle('active');
-    saveSettings();
-  });
-  
-  document.getElementById('autoLockMinutes').addEventListener('change', saveSettings);
-  
-  // 导出
-  document.getElementById('exportBtn').addEventListener('click', exportData);
-  
-  // 导入
-  document.getElementById('importBtn').addEventListener('click', () => {
-    document.getElementById('importFile').click();
-  });
-  
-  document.getElementById('importFile').addEventListener('change', (e) => {
-    if (e.target.files[0]) {
-      importData(e.target.files[0]);
-    }
-  });
-  
-  // 删除
-  document.getElementById('deleteAllBtn').addEventListener('click', deleteAllData);
-});

@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PasswordCat</title>
   <link rel="stylesheet" href="popup.css">
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
 </head>
 <body>
   <div id="app" class="popup-container">
@@ -138,6 +139,8 @@
     </div>
   </div>
   
-  <script src="popup.js" type="module"></script>
+  <script src="../../lib/crypto.js"></script>
+  <script src="../../lib/storage.js"></script>
+  <script src="popup.js"></script>
 </body>
 </html>
