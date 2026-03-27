@@ -3,12 +3,6 @@
  */
 
 document.addEventListener('DOMContentLoaded', function() {
-  // Wait for Vue to be available
-  if (typeof Vue === 'undefined') {
-    document.body.innerHTML = '<div style="padding:20px;text-align:center;">Loading...</div>';
-    return;
-  }
-
   const { encrypt, decrypt, generatePassword, generateSalt } = window.PasswordCatCrypto;
   const { loadData, saveData } = window.PasswordCatStorage;
 
