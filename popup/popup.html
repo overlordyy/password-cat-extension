@@ -8,88 +8,61 @@
 </head>
 <body>
   <div id="app" class="popup-container">
-    <!-- 锁定状态 -->
-    <div id="lockScreen" class="lock-screen">
-      <div class="lock-header">
-        <div class="lock-icon">🔐</div>
-        <h1>PasswordCat</h1>
-      </div>
-      
-      <div id="setupForm" class="setup-form">
-        <p class="setup-hint">创建您的密码保险库</p>
-        <input type="password" id="newMasterPassword" placeholder="设置主密码" class="password-input">
-        <input type="password" id="confirmPassword" placeholder="确认主密码" class="password-input">
-        <button id="btnCreateVault" class="btn btn-primary">创建保险库</button>
-      </div>
-      
-      <div id="unlockForm" class="unlock-form" style="display: none;">
-        <p class="unlock-hint">输入主密码解锁</p>
-        <input type="password" id="masterPassword" placeholder="主密码" class="password-input">
-        <button id="btnUnlock" class="btn btn-primary">解锁</button>
-      </div>
-      
-      <p id="errorMessage" class="error-message" style="display: none;"></p>
+    <!-- 顶部导航 -->
+    <div class="navbar">
+      <div class="navbar-logo">🔐 PasswordCat</div>
+      <button id="btnAdd" class="btn-add">+</button>
     </div>
-    
-    <!-- 解锁状态 -->
-    <div id="mainScreen" class="main-screen" style="display: none;">
-      <!-- 搜索栏 -->
-      <div class="search-bar">
-        <input type="text" id="searchInput" placeholder="搜索密码..." class="search-input">
-        <button id="btnAdd" class="btn-add">+</button>
-      </div>
-      
-      <!-- 密码列表 -->
-      <div id="entriesList" class="entries-list"></div>
-      
-      <!-- 添加/编辑表单 -->
-      <div id="modal" class="modal" style="display: none;">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h2 id="modalTitle">添加密码</h2>
-            <button id="btnCloseModal" class="btn-close">×</button>
-          </div>
-          
-          <div class="form-group">
-            <label>网站名称</label>
-            <input type="text" id="inputTitle" placeholder="如: GitHub" class="form-input">
-          </div>
-          
-          <div class="form-group">
-            <label>网站 URL</label>
-            <input type="text" id="inputUrl" placeholder="https://github.com" class="form-input">
-          </div>
-          
-          <div class="form-group">
-            <label>账户</label>
-            <input type="text" id="inputUsername" placeholder="邮箱或用户名" class="form-input">
-          </div>
-          
-          <div class="form-group">
-            <label>密码</label>
-            <div class="password-field">
-              <input type="password" id="inputPassword" placeholder="密码" class="form-input">
-              <button id="btnTogglePassword" type="button" class="btn-toggle">👁️</button>
-            </div>
-            <button id="btnGenerate" type="button" class="btn-generate">🎲 生成密码</button>
-          </div>
-          
-          <div class="form-actions">
-            <button id="btnCancel" class="btn btn-secondary">取消</button>
-            <button id="btnSave" class="btn btn-primary">保存</button>
+
+    <!-- 搜索栏 -->
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="搜索密码..." class="search-input">
+    </div>
+
+    <!-- 密码列表 -->
+    <div id="entriesList" class="entries-list"></div>
+
+    <!-- 添加/编辑表单 -->
+    <div id="modal" class="modal" style="display: none;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 id="modalTitle">添加密码</h2>
+          <button id="btnCloseModal" class="btn-close">×</button>
+        </div>
+
+        <div class="form-group">
+          <label>网站名称 <span class="required">*</span></label>
+          <input type="text" id="inputTitle" placeholder="如: GitHub" class="form-input">
+        </div>
+
+        <div class="form-group">
+          <label>网站 URL</label>
+          <input type="text" id="inputUrl" placeholder="https://github.com" class="form-input">
+        </div>
+
+        <div class="form-group">
+          <label>账户 <span class="required">*</span></label>
+          <input type="text" id="inputUsername" placeholder="邮箱或用户名" class="form-input">
+        </div>
+
+        <div class="form-group">
+          <label>密码 <span class="required">*</span></label>
+          <div class="password-field">
+            <input type="password" id="inputPassword" placeholder="密码" class="form-input">
+            <button id="btnTogglePassword" type="button" class="btn-toggle">👁️</button>
           </div>
         </div>
-      </div>
-      
-      <!-- 底部栏 -->
-      <div class="footer-bar">
-        <button id="btnLock" class="btn-lock">🔒 锁定</button>
-        <button id="btnSettings" class="btn-settings">⚙️</button>
+
+        <p id="formError" class="error-message" style="display: none;"></p>
+
+        <div class="form-actions">
+          <button id="btnCancel" class="btn btn-secondary">取消</button>
+          <button id="btnSave" class="btn btn-primary">保存</button>
+        </div>
       </div>
     </div>
   </div>
-  
-  <script src="../lib/crypto.js"></script>
+
   <script src="../lib/storage.js"></script>
   <script src="popup.js"></script>
 </body>
