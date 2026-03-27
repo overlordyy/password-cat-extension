@@ -35,7 +35,7 @@ function bindEvents() {
   document.getElementById('btnSave').addEventListener('click', saveEntry);
   document.getElementById('btnTogglePassword').addEventListener('click', togglePassword);
   document.getElementById('modal').addEventListener('click', (e) => {
-    if (e.target === document.getElementById('modal')) closeModal();
+    if (e.target.id === 'modal') closeModal();
   });
 }
 
@@ -48,7 +48,7 @@ function openAddForm() {
   document.getElementById('inputPassword').value = '';
   resetPasswordToggle();
   hideFormError();
-  document.getElementById('modal').style.display = 'flex';
+  showModal();
 }
 
 function openEditForm(entry) {
@@ -60,11 +60,17 @@ function openEditForm(entry) {
   document.getElementById('inputPassword').value = entry.password;
   resetPasswordToggle();
   hideFormError();
-  document.getElementById('modal').style.display = 'flex';
+  showModal();
+}
+
+function showModal() {
+  const modal = document.getElementById('modal');
+  modal.style.display = 'flex';
 }
 
 function closeModal() {
-  document.getElementById('modal').style.display = 'none';
+  const modal = document.getElementById('modal');
+  modal.style.display = 'none';
   editingId = null;
 }
 
