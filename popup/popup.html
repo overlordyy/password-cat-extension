@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PasswordCat</title>
-  <link rel="stylesheet" href="popup.css">
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <link rel="stylesheet" href="popup.css">
 </head>
 <body>
   <div id="app" class="popup-container">
@@ -58,7 +58,7 @@
           placeholder="搜索密码..."
           class="search-input"
         >
-        <button @click="showAddForm = true" class="btn-add">+</button>
+        <button @click="openAddForm" class="btn-add">+</button>
       </div>
       
       <!-- 密码列表 -->
@@ -71,7 +71,7 @@
           v-for="entry in filteredEntries" 
           :key="entry.id" 
           class="entry-card"
-          @click="selectEntry(entry)"
+          @click="openEditForm(entry)"
         >
           <div class="entry-icon">{{ getPlatformIcon(entry.title) }}</div>
           <div class="entry-info">
@@ -89,7 +89,7 @@
       <div v-if="showAddForm" class="modal">
         <div class="modal-content">
           <div class="modal-header">
-            <h2>{{ editingEntry ? '编辑' : '添加' }}密码</h2>
+            <h2>{{ isEditing ? '编辑' : '添加' }}密码</h2>
             <button @click="closeForm" class="btn-close">×</button>
           </div>
           
@@ -112,16 +112,16 @@
             <label>密码</label>
             <div class="password-field">
               <input 
-                :type="showPassword ? 'text' : 'password'" 
+                :type="showPasswordField ? 'text' : 'password'" 
                 v-model="formData.password" 
                 placeholder="密码"
                 class="form-input"
               >
-              <button @click="showPassword = !showPassword" class="btn-toggle">
-                {{ showPassword ? '🙈' : '👁️' }}
+              <button @click="showPasswordField = !showPasswordField" type="button" class="btn-toggle">
+                {{ showPasswordField ? '🙈' : '👁️' }}
               </button>
             </div>
-            <button @click="generateNewPassword" class="btn-generate">🎲 生成密码</button>
+            <button @click="generateNewPassword" type="button" class="btn-generate">🎲 生成密码</button>
           </div>
           
           <div class="form-actions">
@@ -139,8 +139,8 @@
     </div>
   </div>
   
-  <script src="../../lib/crypto.js"></script>
-  <script src="../../lib/storage.js"></script>
+  <script src="lib/crypto.js"></script>
+  <script src="lib/storage.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>

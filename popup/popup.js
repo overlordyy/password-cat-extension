@@ -2,23 +2,20 @@
  * PasswordCat Chrome Extension - Popup App
  */
 
-// Wait for dependencies to load
-document.addEventListener('DOMContentLoaded', init);
-
-function init() {
-  // Check if Vue and libs are loaded
+document.addEventListener('DOMContentLoaded', function() {
+  // Wait for Vue to be available
   if (typeof Vue === 'undefined') {
-    console.error('Vue not loaded');
+    document.body.innerHTML = '<div style="padding:20px;text-align:center;">Loading...</div>';
     return;
   }
-  
+
   const { encrypt, decrypt, generatePassword, generateSalt } = window.PasswordCatCrypto;
   const { loadData, saveData } = window.PasswordCatStorage;
 
   const VAULT_KEY = 'passwordcat_master_key';
   const SALT_KEY = 'passwordcat_salt';
 
-  const app = Vue.createApp({
+  Vue.createApp({
     data() {
       return {
         // State
@@ -35,10 +32,10 @@ function init() {
         entries: [],
         searchQuery: '',
         showAddForm: false,
-        editingEntry: null,
-        showPassword: false,
+        isEditing: false,
+        showPasswordField: false,
         
-        // New/Edit Form
+        // Form Data
         formData: {
           title: '',
           url: '',
@@ -55,7 +52,7 @@ function init() {
         return this.entries.filter(entry =>
           entry.title.toLowerCase().includes(query) ||
           entry.username.toLowerCase().includes(query) ||
-          entry.url?.toLowerCase().includes(query)
+          (entry.url && entry.url.toLowerCase().includes(query))
         );
       }
     },
@@ -67,13 +64,12 @@ function init() {
     methods: {
       // Check if vault exists
       async checkVault() {
-        const data = await loadData();
-        this.hasVault = data.entries.length > 0 || await this.hasStoredVault();
+        this.hasVault = await this.hasStoredVault();
         this.isUnlocked = false;
       },
       
       async hasStoredVault() {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
           chrome.storage.local.get([VAULT_KEY, SALT_KEY], result => {
             resolve(!!result[VAULT_KEY] && !!result[SALT_KEY]);
           });
@@ -180,24 +176,40 @@ function init() {
         this.entries = [];
       },
       
-      // Select entry for editing
-      selectEntry(entry) {
-        this.editingEntry = { ...entry };
-        this.formData = { ...entry };
-        this.showAddForm = true;
-      },
-      
-      // Close form
-      closeForm() {
-        this.showAddForm = false;
-        this.editingEntry = null;
+      // Open add form
+      openAddForm() {
+        this.isEditing = false;
         this.formData = {
           title: '',
           url: '',
           username: '',
           password: ''
         };
-        this.showPassword = false;
+        this.showPasswordField = false;
+        this.showAddForm = true;
+        this.error = '';
+      },
+      
+      // Open edit form
+      openEditForm(entry) {
+        this.isEditing = true;
+        this.formData = { ...entry };
+        this.showPasswordField = false;
+        this.showAddForm = true;
+        this.error = '';
+      },
+      
+      // Close form
+      closeForm() {
+        this.showAddForm = false;
+        this.isEditing = false;
+        this.formData = {
+          title: '',
+          url: '',
+          username: '',
+          password: ''
+        };
+        this.showPasswordField = false;
         this.error = '';
       },
       
@@ -209,8 +221,8 @@ function init() {
         }
         
         try {
-          if (this.editingEntry) {
-            const index = this.entries.findIndex(e => e.id === this.editingEntry.id);
+          if (this.isEditing) {
+            const index = this.entries.findIndex(e => e.id === this.formData.id);
             if (index !== -1) {
               this.entries[index] = {
                 ...this.entries[index],
@@ -260,7 +272,7 @@ function init() {
           numbers: true,
           symbols: true
         });
-        this.showPassword = true;
+        this.showPasswordField = true;
       },
       
       // Get platform icon
@@ -274,7 +286,11 @@ function init() {
           'bilibili': '📺',
           'youtube': '▶️',
           'google': '🔍',
-          'baidu': '🦆'
+          'baidu': '🦆',
+          'qq': '🐧',
+          'wechat': '💬',
+          'taobao': '🛒',
+          'jd': '🛍️'
         };
         const lower = title.toLowerCase();
         for (const [key, icon] of Object.entries(icons)) {
@@ -297,7 +313,5 @@ function init() {
         chrome.runtime.openOptionsPage();
       }
     }
-  });
-
-  app.mount('#app');
-}
+  }).mount('#app');
+});
