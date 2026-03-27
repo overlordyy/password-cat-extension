@@ -9,136 +9,86 @@
 <body>
   <div id="app" class="popup-container">
     <!-- 锁定状态 -->
-    <div v-if="!isUnlocked" class="lock-screen">
+    <div id="lockScreen" class="lock-screen">
       <div class="lock-header">
         <div class="lock-icon">🔐</div>
         <h1>PasswordCat</h1>
       </div>
       
-      <div v-if="!hasVault" class="setup-form">
+      <div id="setupForm" class="setup-form">
         <p class="setup-hint">创建您的密码保险库</p>
-        <input 
-          type="password" 
-          v-model="newMasterPassword" 
-          placeholder="设置主密码"
-          class="password-input"
-        >
-        <input 
-          type="password" 
-          v-model="confirmPassword" 
-          placeholder="确认主密码"
-          class="password-input"
-        >
-        <button @click="createVault" class="btn btn-primary">创建保险库</button>
+        <input type="password" id="newMasterPassword" placeholder="设置主密码" class="password-input">
+        <input type="password" id="confirmPassword" placeholder="确认主密码" class="password-input">
+        <button id="btnCreateVault" class="btn btn-primary">创建保险库</button>
       </div>
       
-      <div v-else class="unlock-form">
+      <div id="unlockForm" class="unlock-form" style="display: none;">
         <p class="unlock-hint">输入主密码解锁</p>
-        <input 
-          type="password" 
-          v-model="masterPassword" 
-          placeholder="主密码"
-          class="password-input"
-          @keyup.enter="unlock"
-        >
-        <button @click="unlock" class="btn btn-primary">解锁</button>
+        <input type="password" id="masterPassword" placeholder="主密码" class="password-input">
+        <button id="btnUnlock" class="btn btn-primary">解锁</button>
       </div>
       
-      <p v-if="error" class="error-message">{{ error }}</p>
+      <p id="errorMessage" class="error-message" style="display: none;"></p>
     </div>
     
     <!-- 解锁状态 -->
-    <div v-else class="main-screen">
+    <div id="mainScreen" class="main-screen" style="display: none;">
       <!-- 搜索栏 -->
       <div class="search-bar">
-        <input 
-          type="text" 
-          v-model="searchQuery" 
-          placeholder="搜索密码..."
-          class="search-input"
-        >
-        <button @click="openAddForm" class="btn-add">+</button>
+        <input type="text" id="searchInput" placeholder="搜索密码..." class="search-input">
+        <button id="btnAdd" class="btn-add">+</button>
       </div>
       
       <!-- 密码列表 -->
-      <div class="entries-list">
-        <div v-if="filteredEntries.length === 0" class="empty-state">
-          <p>暂无保存的密码</p>
-        </div>
-        
-        <div 
-          v-for="entry in filteredEntries" 
-          :key="entry.id" 
-          class="entry-card"
-          @click="openEditForm(entry)"
-        >
-          <div class="entry-icon">{{ getPlatformIcon(entry.title) }}</div>
-          <div class="entry-info">
-            <div class="entry-title">{{ entry.title }}</div>
-            <div class="entry-username">{{ entry.username }}</div>
-          </div>
-          <div class="entry-actions">
-            <button @click.stop="copyUsername(entry)" class="btn-icon" title="复制账户">📋</button>
-            <button @click.stop="copyPassword(entry)" class="btn-icon" title="复制密码">🔑</button>
-          </div>
-        </div>
-      </div>
+      <div id="entriesList" class="entries-list"></div>
       
       <!-- 添加/编辑表单 -->
-      <div v-if="showAddForm" class="modal">
+      <div id="modal" class="modal" style="display: none;">
         <div class="modal-content">
           <div class="modal-header">
-            <h2>{{ isEditing ? '编辑' : '添加' }}密码</h2>
-            <button @click="closeForm" class="btn-close">×</button>
+            <h2 id="modalTitle">添加密码</h2>
+            <button id="btnCloseModal" class="btn-close">×</button>
           </div>
           
           <div class="form-group">
             <label>网站名称</label>
-            <input v-model="formData.title" placeholder="如: GitHub" class="form-input">
+            <input type="text" id="inputTitle" placeholder="如: GitHub" class="form-input">
           </div>
           
           <div class="form-group">
             <label>网站 URL</label>
-            <input v-model="formData.url" placeholder="https://github.com" class="form-input">
+            <input type="text" id="inputUrl" placeholder="https://github.com" class="form-input">
           </div>
           
           <div class="form-group">
             <label>账户</label>
-            <input v-model="formData.username" placeholder="邮箱或用户名" class="form-input">
+            <input type="text" id="inputUsername" placeholder="邮箱或用户名" class="form-input">
           </div>
           
           <div class="form-group">
             <label>密码</label>
             <div class="password-field">
-              <input 
-                :type="showPasswordField ? 'text' : 'password'" 
-                v-model="formData.password" 
-                placeholder="密码"
-                class="form-input"
-              >
-              <button @click="showPasswordField = !showPasswordField" type="button" class="btn-toggle">
-                {{ showPasswordField ? '🙈' : '👁️' }}
-              </button>
+              <input type="password" id="inputPassword" placeholder="密码" class="form-input">
+              <button id="btnTogglePassword" type="button" class="btn-toggle">👁️</button>
             </div>
-            <button @click="generateNewPassword" type="button" class="btn-generate">🎲 生成密码</button>
+            <button id="btnGenerate" type="button" class="btn-generate">🎲 生成密码</button>
           </div>
           
           <div class="form-actions">
-            <button @click="closeForm" class="btn btn-secondary">取消</button>
-            <button @click="saveEntry" class="btn btn-primary">保存</button>
+            <button id="btnCancel" class="btn btn-secondary">取消</button>
+            <button id="btnSave" class="btn btn-primary">保存</button>
           </div>
         </div>
       </div>
       
       <!-- 底部栏 -->
       <div class="footer-bar">
-        <button @click="lock" class="btn-lock">🔒 锁定</button>
-        <button @click="openOptions" class="btn-settings">⚙️</button>
+        <button id="btnLock" class="btn-lock">🔒 锁定</button>
+        <button id="btnSettings" class="btn-settings">⚙️</button>
       </div>
     </div>
   </div>
   
-  <script src="../lib/vue.js"></script>
   <script src="../lib/crypto.js"></script>
   <script src="../lib/storage.js"></script>
   <script src="popup.js"></script>

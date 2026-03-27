@@ -19,11 +19,7 @@
       --gradient: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
     }
     
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     
     body {
       font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
@@ -33,23 +29,10 @@
       min-height: 100vh;
     }
     
-    .container {
-      max-width: 600px;
-      margin: 0 auto;
-    }
+    .container { max-width: 600px; margin: 0 auto; }
     
-    h1 {
-      font-size: 28px;
-      margin-bottom: 8px;
-      background: var(--gradient);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    
-    .subtitle {
-      color: var(--text-secondary);
-      margin-bottom: 32px;
-    }
+    h1 { font-size: 28px; margin-bottom: 8px; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .subtitle { color: var(--text-secondary); margin-bottom: 32px; }
     
     .section {
       background: var(--bg-card);
@@ -59,188 +42,62 @@
       box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
     }
     
-    .section-title {
-      font-size: 16px;
-      font-weight: 600;
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+    .section-title { font-size: 16px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
     
-    .form-group {
-      margin-bottom: 16px;
-    }
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 16px; }
+    .stat-item { text-align: center; padding: 16px; background: var(--bg-input); border-radius: 10px; }
+    .stat-number { font-size: 24px; font-weight: 700; color: var(--primary); }
+    .stat-label { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
     
-    .form-group label {
-      display: block;
-      font-size: 13px;
-      color: var(--text-secondary);
-      margin-bottom: 6px;
-    }
-    
-    .form-input {
-      width: 100%;
-      padding: 12px 16px;
-      background: var(--bg-input);
-      border: 2px solid var(--border);
-      border-radius: 8px;
-      color: var(--text-primary);
-      font-size: 14px;
-      outline: none;
-    }
-    
-    .form-input:focus {
-      border-color: var(--primary);
-    }
-    
-    select.form-input {
-      cursor: pointer;
-    }
-    
-    .btn {
-      padding: 12px 24px;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 600;
-      border: none;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-    
-    .btn-primary {
-      background: var(--gradient);
-      color: white;
-    }
-    
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
-    }
-    
-    .btn-secondary {
-      background: var(--bg-gray);
-      color: var(--text-primary);
-      border: 1px solid var(--border);
-    }
-    
-    .btn-secondary:hover {
-      background: var(--border);
-    }
-    
-    .btn-danger {
-      background: #ef4444;
-      color: white;
-    }
-    
-    .btn-danger:hover {
-      background: #dc2626;
-    }
-    
-    .toggle {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--border);
-    }
-    
-    .toggle:last-child {
-      border-bottom: none;
-    }
-    
-    .toggle-label {
-      font-size: 14px;
-    }
+    .toggle { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
+    .toggle:last-child { border-bottom: none; }
+    .toggle-label { font-size: 14px; }
     
     .toggle-switch {
-      width: 48px;
-      height: 26px;
-      background: var(--bg-input);
-      border-radius: 13px;
-      position: relative;
-      cursor: pointer;
-      transition: background 0.3s;
+      width: 48px; height: 26px; background: var(--bg-input); border-radius: 13px;
+      position: relative; cursor: pointer; transition: background 0.3s;
     }
-    
-    .toggle-switch.active {
-      background: var(--primary);
-    }
-    
+    .toggle-switch.active { background: var(--primary); }
     .toggle-switch::after {
-      content: '';
-      position: absolute;
-      width: 22px;
-      height: 22px;
-      background: white;
-      border-radius: 50%;
-      top: 2px;
-      left: 2px;
-      transition: transform 0.3s;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      content: ''; position: absolute; width: 22px; height: 22px; background: white;
+      border-radius: 50%; top: 2px; left: 2px; transition: transform 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
+    .toggle-switch.active::after { transform: translateX(22px); }
     
-    .toggle-switch.active::after {
-      transform: translateX(22px);
-    }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 6px; }
     
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-      margin-top: 16px;
+    .form-input {
+      width: 100%; padding: 12px 16px; background: var(--bg-input);
+      border: 2px solid var(--border); border-radius: 8px;
+      color: var(--text-primary); font-size: 14px; outline: none;
     }
+    .form-input:focus { border-color: var(--primary); }
+    select.form-input { cursor: pointer; }
     
-    .stat-item {
-      text-align: center;
-      padding: 16px;
-      background: var(--bg-input);
-      border-radius: 10px;
+    .btn {
+      padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600;
+      border: none; cursor: pointer; transition: all 0.3s; display: inline-block;
     }
+    .btn-primary { background: var(--gradient); color: white; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4); }
+    .btn-secondary { background: var(--bg-gray); color: var(--text-primary); border: 1px solid var(--border); }
+    .btn-secondary:hover { background: var(--border); }
+    .btn-danger { background: #ef4444; color: white; }
+    .btn-danger:hover { background: #dc2626; }
     
-    .stat-number {
-      font-size: 24px;
-      font-weight: 700;
-      color: var(--primary);
-    }
+    .mb-12 { margin-bottom: 12px; }
     
-    .stat-label {
-      font-size: 12px;
-      color: var(--text-secondary);
-      margin-top: 4px;
-    }
+    .danger-zone { border: 1px solid #fecaca; }
+    .danger-zone .section-title { color: #ef4444; }
     
-    .danger-zone {
-      border: 1px solid #fecaca;
-    }
-    
-    .danger-zone .section-title {
-      color: #ef4444;
-    }
-    
-    .footer {
-      text-align: center;
-      margin-top: 40px;
-      color: var(--text-secondary);
-      font-size: 13px;
-    }
-    
-    .footer a {
-      color: var(--primary);
-      text-decoration: none;
-    }
-    
-    .footer a:hover {
-      text-decoration: underline;
-    }
-    
-    .mb-12 {
-      margin-bottom: 12px;
-    }
+    .footer { text-align: center; margin-top: 40px; color: var(--text-secondary); font-size: 13px; }
+    .footer a { color: var(--primary); text-decoration: none; }
+    .footer a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
-  <div id="app" class="container">
+  <div class="container">
     <h1>⚙️ PasswordCat 设置</h1>
     <p class="subtitle">管理您的密码扩展设置</p>
     
@@ -249,7 +106,7 @@
       <div class="section-title">📊 存储统计</div>
       <div class="stats">
         <div class="stat-item">
-          <div class="stat-number">{{ entriesCount }}</div>
+          <div class="stat-number" id="entriesCount">0</div>
           <div class="stat-label">密码条目</div>
         </div>
         <div class="stat-item">
@@ -257,7 +114,7 @@
           <div class="stat-label">版本</div>
         </div>
         <div class="stat-item">
-          <div class="stat-number">{{ autoLockMinutes }}分钟</div>
+          <div class="stat-number" id="autoLockDisplay">15分钟</div>
           <div class="stat-label">自动锁定</div>
         </div>
       </div>
@@ -266,44 +123,28 @@
     <!-- 自动填充设置 -->
     <div class="section">
       <div class="section-title">🎯 自动填充</div>
-      
       <div class="toggle">
         <span class="toggle-label">启用自动填充</span>
-        <div 
-          class="toggle-switch" 
-          :class="{ active: settings.autoFill }"
-          @click="settings.autoFill = !settings.autoFill; saveSettings()"
-        ></div>
+        <div class="toggle-switch active" id="autoFillToggle"></div>
       </div>
-      
       <div class="toggle">
         <span class="toggle-label">显示浮动按钮</span>
-        <div 
-          class="toggle-switch" 
-          :class="{ active: settings.showFab }"
-          @click="settings.showFab = !settings.showFab; saveSettings()"
-        ></div>
+        <div class="toggle-switch active" id="fabToggle"></div>
       </div>
-      
       <div class="toggle">
         <span class="toggle-label">自动检测登录页面</span>
-        <div 
-          class="toggle-switch" 
-          :class="{ active: settings.autoDetect }"
-          @click="settings.autoDetect = !settings.autoDetect; saveSettings()"
-        ></div>
+        <div class="toggle-switch active" id="autoDetectToggle"></div>
       </div>
     </div>
     
     <!-- 安全设置 -->
     <div class="section">
       <div class="section-title">🔒 安全</div>
-      
       <div class="form-group">
         <label>自动锁定时间</label>
-        <select class="form-input" v-model="settings.autoLockMinutes" @change="saveSettings()">
+        <select class="form-input" id="autoLockMinutes">
           <option value="5">5 分钟</option>
-          <option value="15">15 分钟</option>
+          <option value="15" selected>15 分钟</option>
           <option value="30">30 分钟</option>
           <option value="60">1 小时</option>
           <option value="0">从不</option>
@@ -314,30 +155,24 @@
     <!-- 备份与恢复 -->
     <div class="section">
       <div class="section-title">💾 备份与恢复</div>
-      
       <div class="form-group">
         <label>导出加密备份</label>
-        <button class="btn btn-primary mb-12" @click="exportData">📤 导出数据</button>
+        <button class="btn btn-primary mb-12" id="exportBtn">📤 导出数据</button>
       </div>
-      
       <div class="form-group">
         <label>导入备份文件</label>
-        <input type="file" id="importFile" accept=".json" style="display: none" @change="importData">
-        <button class="btn btn-secondary" @click="$refs.fileInput.click()">📥 导入数据</button>
-        <input type="file" ref="fileInput" style="display: none" accept=".json" @change="importData">
+        <input type="file" id="importFile" accept=".json" style="display: none;">
+        <button class="btn btn-secondary" id="importBtn">📥 导入数据</button>
       </div>
     </div>
     
     <!-- 危险区域 -->
     <div class="section danger-zone">
       <div class="section-title">⚠️ 危险区域</div>
-      
       <div class="form-group">
         <label>删除所有数据</label>
-        <p style="font-size: 12px; color: var(--text-secondary); margin: 8px 0 12px;">
-          此操作不可恢复，请确保已导出备份
-        </p>
-        <button class="btn btn-danger" @click="deleteAllData">🗑️ 删除所有数据</button>
+        <p style="font-size: 12px; color: var(--text-secondary); margin: 8px 0 12px;">此操作不可恢复，请确保已导出备份</p>
+        <button class="btn btn-danger" id="deleteAllBtn">🗑️ 删除所有数据</button>
       </div>
     </div>
     
@@ -346,104 +181,8 @@
     </div>
   </div>
   
-  <script src="../lib/vue.js"></script>
-  <script>
-    const { createApp } = Vue;
-    
-    createApp({
-      data() {
-        return {
-          settings: {
-            autoFill: true,
-            showFab: true,
-            autoDetect: true,
-            autoLockMinutes: 15
-          },
-          entriesCount: 0
-        };
-      },
-      
-      async mounted() {
-        await this.loadSettings();
-        await this.loadStats();
-      },
-      
-      methods: {
-        async loadSettings() {
-          const result = await chrome.storage.local.get('passwordcat_settings');
-          if (result.passwordcat_settings) {
-            this.settings = { ...this.settings, ...result.passwordcat_settings };
-          }
-        },
-        
-        async loadStats() {
-          const result = await chrome.storage.local.get('passwordcat_entries_index');
-          if (result.passwordcat_entries_index) {
-            this.entriesCount = '?';
-          }
-        },
-        
-        saveSettings() {
-          chrome.storage.local.set({ passwordcat_settings: this.settings });
-        },
-        
-        async exportData() {
-          try {
-            const result = await chrome.storage.local.get(null);
-            const exportData = {
-              version: '1.0.0',
-              exportDate: new Date().toISOString(),
-              data: result
-            };
-            
-            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'passwordcat-backup-' + new Date().toISOString().split('T')[0] + '.json';
-            a.click();
-            
-            URL.revokeObjectURL(url);
-          } catch (e) {
-            alert('导出失败');
-          }
-        },
-        
-        async importData(event) {
-          const file = event.target.files[0];
-          if (!file) return;
-          
-          try {
-            const text = await file.text();
-            const importData = JSON.parse(text);
-            
-            if (!importData.data) {
-              throw new Error('无效的备份文件');
-            }
-            
-            await chrome.storage.local.set(importData.data);
-            alert('导入成功！');
-            location.reload();
-          } catch (e) {
-            alert('导入失败: ' + e.message);
-          }
-        },
-        
-        async deleteAllData() {
-          if (!confirm('确定要删除所有数据吗？此操作不可恢复！')) return;
-          if (!confirm('再次确认：所有密码数据将被永久删除！')) return;
-          
-          try {
-            await chrome.storage.local.clear();
-            alert('所有数据已删除');
-            location.reload();
-          } catch (e) {
-            alert('删除失败');
-          }
-        }
-      }
-    }).mount('#app');
-  </script>
+  <script src="../lib/crypto.js"></script>
+  <script src="../lib/storage.js"></script>
+  <script src="options.js"></script>
 </body>
 </html>

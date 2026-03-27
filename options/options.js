@@ -1,36 +1,13 @@
 /**
- * PasswordCat Chrome Extension - Options Page
+ * PasswordCat Chrome Extension - Options Page (Vanilla JS)
  */
 
 document.addEventListener('DOMContentLoaded', init);
 
-function init() {
-  loadSettings();
-  loadStats();
-  
-  // Toggle handlers
-  document.querySelectorAll('.toggle-switch').forEach(toggle => {
-    toggle.addEventListener('click', () => {
-      toggle.classList.toggle('active');
-      saveSettings();
-    });
-  });
-  
-  // Auto-lock select
-  document.getElementById('autoLockMinutes').addEventListener('change', saveSettings);
-  
-  // Export
-  document.getElementById('exportBtn').addEventListener('click', exportData);
-  
-  // Import
-  document.getElementById('importBtn').addEventListener('click', () => {
-    document.getElementById('importFile').click();
-  });
-  
-  document.getElementById('importFile').addEventListener('change', importData);
-  
-  // Delete all
-  document.getElementById('deleteAllBtn').addEventListener('click', deleteAllData);
+async function init() {
+  await loadSettings();
+  await loadStats();
+  bindEvents();
 }
 
 async function loadSettings() {
@@ -46,13 +23,61 @@ async function loadSettings() {
   document.getElementById('fabToggle').classList.toggle('active', settings.showFab);
   document.getElementById('autoDetectToggle').classList.toggle('active', settings.autoDetect);
   document.getElementById('autoLockMinutes').value = settings.autoLockMinutes;
+  updateAutoLockDisplay(settings.autoLockMinutes);
 }
 
 async function loadStats() {
   const result = await chrome.storage.local.get('passwordcat_entries_index');
+  const entriesCount = document.getElementById('entriesCount');
   if (result.passwordcat_entries_index) {
-    document.getElementById('entriesCount').textContent = '?';
+    entriesCount.textContent = '?';
   }
+}
+
+function updateAutoLockDisplay(minutes) {
+  const display = document.getElementById('autoLockDisplay');
+  if (minutes === 0) {
+    display.textContent = '从不';
+  } else {
+    display.textContent = minutes + '分钟';
+  }
+}
+
+function bindEvents() {
+  // Toggles
+  document.getElementById('autoFillToggle').addEventListener('click', () => {
+    document.getElementById('autoFillToggle').classList.toggle('active');
+    saveSettings();
+  });
+  
+  document.getElementById('fabToggle').addEventListener('click', () => {
+    document.getElementById('fabToggle').classList.toggle('active');
+    saveSettings();
+  });
+  
+  document.getElementById('autoDetectToggle').addEventListener('click', () => {
+    document.getElementById('autoDetectToggle').classList.toggle('active');
+    saveSettings();
+  });
+  
+  // Auto-lock select
+  document.getElementById('autoLockMinutes').addEventListener('change', (e) => {
+    updateAutoLockDisplay(parseInt(e.target.value));
+    saveSettings();
+  });
+  
+  // Export
+  document.getElementById('exportBtn').addEventListener('click', exportData);
+  
+  // Import
+  document.getElementById('importBtn').addEventListener('click', () => {
+    document.getElementById('importFile').click();
+  });
+  
+  document.getElementById('importFile').addEventListener('change', importData);
+  
+  // Delete all
+  document.getElementById('deleteAllBtn').addEventListener('click', deleteAllData);
 }
 
 async function saveSettings() {
