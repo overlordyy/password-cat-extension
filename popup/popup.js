@@ -159,6 +159,7 @@ function renderEntries() {
         <div class="entry-username">${escapeHtml(entry.username)}</div>
       </div>
       <div class="entry-actions">
+        <button class="btn-icon btn-icon-fill" data-action="fill" data-id="${entry.id}" title="填入到页面">⌨️</button>
         <button class="btn-icon" data-action="copy-user" data-id="${entry.id}" title="复制账户">📋</button>
         <button class="btn-icon" data-action="copy-pass" data-id="${entry.id}" title="复制密码">🔑</button>
         <button class="btn-icon btn-icon-danger" data-action="delete" data-id="${entry.id}" title="删除">🗑️</button>
@@ -179,11 +180,85 @@ function renderEntries() {
       const { action, id } = btn.dataset;
       const entry = entries.find(e => e.id === id);
       if (!entry) return;
+      if (action === 'fill') fillToPage(entry);
       if (action === 'copy-user') copyToClipboard(entry.username, '账户');
       if (action === 'copy-pass') copyToClipboard(entry.password, '密码');
       if (action === 'delete') deleteEntry(id);
     });
   });
+}
+
+// 填入到当前页面
+async function fillToPage(entry) {
+  try {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (!tab?.id) { showToast('无法获取当前标签页'); return; }
+
+    await chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      func: (username, password) => {
+        // 查找用户名框（多种选择器）
+        const usernameSelectors = [
+          'input[autocomplete="username"]',
+          'input[autocomplete="email"]',
+          'input[type="email"]',
+          'input[name*="user" i]',
+          'input[name*="email" i]',
+          'input[name*="login" i]',
+          'input[id*="user" i]',
+          'input[id*="email" i]',
+          'input[id*="login" i]',
+          'input[type="text"]',
+        ];
+
+        const passwordSelectors = [
+          'input[autocomplete="current-password"]',
+          'input[autocomplete="new-password"]',
+          'input[type="password"]',
+        ];
+
+        function fillInput(el, value) {
+          if (!el || !value) return false;
+          // 兼容 React/Vue 等框架的受控组件
+          const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')?.set;
+          if (nativeInputValueSetter) nativeInputValueSetter.call(el, value);
+          else el.value = value;
+          ['input', 'change', 'blur'].forEach(evt =>
+            el.dispatchEvent(new Event(evt, { bubbles: true }))
+          );
+          return true;
+        }
+
+        let filled = false;
+
+        // 填充用户名
+        for (const sel of usernameSelectors) {
+          const el = document.querySelector(sel);
+          if (el && el.offsetParent !== null) { // 只填可见元素
+            if (fillInput(el, username)) { filled = true; break; }
+          }
+        }
+
+        // 填充密码
+        for (const sel of passwordSelectors) {
+          const el = document.querySelector(sel);
+          if (el && el.offsetParent !== null) {
+            fillInput(el, password);
+            break;
+          }
+        }
+
+        return filled;
+      },
+      args: [entry.username, entry.password],
+    });
+
+    showToast('已填入账户和密码 ✓');
+    // 自动关闭 popup
+    setTimeout(() => window.close(), 800);
+  } catch (e) {
+    showToast('填入失败：' + (e.message || '请检查页面权限'));
+  }
 }
 
 async function copyToClipboard(text, label) {

@@ -81,21 +81,26 @@
   // 检测页面上的输入框并添加自动填充功能
   function setupAutoFill() {
     const passwordInputs = document.querySelectorAll('input[type="password"]');
-    
+
     passwordInputs.forEach(input => {
-      // 查找关联的用户名输入框
+      // 跳过已添加过图标的
+      if (input.dataset.passwordcatDone) return;
+      input.dataset.passwordcatDone = '1';
+
+      // 查找关联的用户名输入框（不强依赖 form）
       const form = input.closest('form');
-      if (!form) return;
-      
-      const usernameInput = form.querySelector('input[type="text"], input[type="email"]');
-      
+      const searchRoot = form || document;
+      const usernameInput = searchRoot.querySelector(
+        'input[type="email"], input[type="text"], input[autocomplete="username"], input[autocomplete="email"]'
+      );
+
       // 添加图标按钮
       const iconBtn = document.createElement('button');
       iconBtn.type = 'button';
       iconBtn.innerHTML = '🔐';
       iconBtn.title = '使用 PasswordCat 自动填充';
       iconBtn.className = 'passwordcat-autofill-btn';
-      
+
       iconBtn.style.cssText = `
         position: absolute;
         right: 8px;
@@ -108,30 +113,24 @@
         opacity: 0.6;
         transition: opacity 0.3s;
         padding: 4px;
+        z-index: 9999;
       `;
-      
-      iconBtn.addEventListener('mouseenter', () => {
-        iconBtn.style.opacity = '1';
-      });
-      
-      iconBtn.addEventListener('mouseleave', () => {
-        iconBtn.style.opacity = '0.6';
-      });
-      
+
+      iconBtn.addEventListener('mouseenter', () => { iconBtn.style.opacity = '1'; });
+      iconBtn.addEventListener('mouseleave', () => { iconBtn.style.opacity = '0.6'; });
+
       // 定位
       const parent = input.parentElement;
       if (getComputedStyle(parent).position === 'static') {
         parent.style.position = 'relative';
       }
-      
       parent.appendChild(iconBtn);
-      
+
+      // 点击时发送消息给 background（只传可序列化的数据）
       iconBtn.addEventListener('click', () => {
         chrome.runtime.sendMessage({
           type: 'SHOW_POPUP_FOR_DOMAIN',
           domain: window.location.hostname,
-          usernameField: usernameInput,
-          passwordField: input
         });
       });
     });

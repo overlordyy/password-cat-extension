@@ -180,6 +180,7 @@ body {
 
 .btn-icon:hover { background: var(--primary); }
 .btn-icon-danger:hover { background: var(--danger); }
+.btn-icon-fill:hover { background: #10b981; }
 
 /* Modal */
 .modal {
